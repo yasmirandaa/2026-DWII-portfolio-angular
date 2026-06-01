@@ -8,5 +8,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('2026-DWII-portfolio-angular');
+  protected readonly title = signal('Meu Portifólio');
 }
