@@ -1,5 +1,27 @@
 # Projeto Angular
 
+## Funcionalidades Implementadas
+
+### Nível C
+
+* Criação das páginas Início, Sobre, Projetos e Contato.
+* Configuração do roteamento entre páginas utilizando Angular Router.
+* Barra de navegação funcional com Angular Material.
+* Utilização de componentes `mat-card` nas páginas Início e Sobre.
+
+### Nível B
+
+* Ampliação do conteúdo das páginas Início e Sobre com informações pessoais e acadêmicas.
+* Destaque visual da página atual no menu utilizando `routerLinkActive`.
+* Melhorias na organização e apresentação do conteúdo.
+* Atualização da documentação do projeto.
+### Nível A
+
+* Adição de conteúdo às páginas Projetos e Contato.
+* Melhorias visuais na interface.
+* Estrutura preparada para futuras funcionalidades.
+* Organização do portfólio como apresentação profissional.
+
 ## Descrição
 
 Este projeto foi desenvolvido utilizando o framework Angular com o objetivo de criar uma aplicação web moderna, responsiva e organizada em componentes. A aplicação utiliza os recursos do Angular para gerenciamento de rotas, componentes, serviços e comunicação com APIs.
