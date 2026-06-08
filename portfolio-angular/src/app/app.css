@@ -74,3 +74,4 @@ p {
     color: var(--white);
     transform: translateY(-2px);
 }
+.espacador { flex: 1 1 auto; }
