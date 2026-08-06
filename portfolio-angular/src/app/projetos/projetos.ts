@@ -1,33 +1,32 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { catchError, finalize, of } from 'rxjs';
 import { ProjetoService, Projeto } from '../projeto.service';
 
 @Component({
   selector: 'app-projetos',
   imports: [
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,
+    AsyncPipe
   ],
   templateUrl: './projetos.html'
 })
-export class Projetos implements OnInit {
+export class Projetos {
   private service = inject(ProjetoService);
 
-  projetos: Projeto[] = [];
   carregando = true;
   erro = '';
 
-  ngOnInit() {
-    this.service.listar().subscribe({
-      next: (lista) => {
-        this.projetos = lista;
-        this.carregando = false;
-      },
-      error: () => {
-        this.erro = 'Falha ao carregar os projetos.';
-        this.carregando = false;
-      }
-    });
-  }
+  projetos$ = this.service.listar().pipe(
+    catchError(() => {
+      this.erro = 'Falha ao carregar os projetos.';
+      return of([] as Projeto[]);
+    }),
+    finalize(() => {
+      this.carregando = false;
+    })
+  );
 }
