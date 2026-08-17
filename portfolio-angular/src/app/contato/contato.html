@@ -1,17 +1,17 @@
-<mat-card>
-    <mat-card-header>
-        <mat-card-title>Contato</mat-card-title>
-        <mat-card-subtitle>Entre em contato comigo</mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-card-content>
-    <p><strong>Nome:</strong> Yasmin Lara Amanajás de Miranda</p>
-    <p><strong>Curso:</strong> Técnico em Informática - IFPR</p>
-    <p><strong>GitHub:</strong> github.com/seuusuario</p>
-
-    <p>
-        Esta página será expandida futuramente com formulário de contato
-        e links para redes profissionais.
-    </p>
-    </mat-card-content>
-</mat-card>
+<!-- src/app/contato/contato.html -->
+<h2>Fale comigo</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <label for="nome">Nome</label>
+  <input id="nome" type="text" formControlName="nome">
+  <label for="email">E-mail</label>
+  <input id="email" type="email" formControlName="email">
+  <label for="mensagem">Mensagem</label>
+  <textarea id="mensagem" formControlName="mensagem" rows="4"></textarea>
+  <!-- botao desabilita enquanto envia; troca o texto -->
+  <button type="submit" [disabled]="enviando">
+    {{ enviando ? 'Enviando...' : 'Enviar' }}
+  </button>
+</form>
+<!-- estados de retorno -->
+@if (sucesso) { <p class="ok">{{ sucesso }}</p> }
+@if (erro)    { <p class="erro">{{ erro }}</p> }
