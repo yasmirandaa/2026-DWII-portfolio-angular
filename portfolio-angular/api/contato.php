@@ -1,12 +1,13 @@
 <?php
-// api/contato.php - recebe um contato via POST e grava no banco.
-header('Access-Control-Allow-Origin: *'); // CORS (mesmo padrao da Aula 16)
+
+header('Access-Control-Allow-Origin: https://improved-yodel-r49xpxvq99jwcwx64-4200.app.github.dev');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
-header('Content-Type: application/json; charset=utf-8');
 
-// Preflight do navegador -> responde e sai.
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
 
 // So aceitamos POST aqui.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
