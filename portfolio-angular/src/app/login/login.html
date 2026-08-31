@@ -1,0 +1,104 @@
+<div class="login-container">
+
+  <mat-card class="login-card">
+
+    <mat-card-header>
+      <mat-card-title>Login</mat-card-title>
+
+      <mat-card-subtitle>
+        Entre na sua conta
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <form
+        [formGroup]="loginForm"
+        (ngSubmit)="entrar()"
+      >
+
+        <!-- E-mail -->
+        <mat-form-field appearance="outline">
+
+          <mat-label>E-mail</mat-label>
+
+          <input
+            matInput
+            type="email"
+            formControlName="email"
+            placeholder="Digite seu e-mail"
+          >
+
+          @if (loginForm.get('email')?.hasError('required')) {
+            <mat-error>
+              O e-mail é obrigatório.
+            </mat-error>
+          }
+
+          @if (
+            loginForm.get('email')?.hasError('email') &&
+            !loginForm.get('email')?.hasError('required')
+          ) {
+            <mat-error>
+              Digite um e-mail válido.
+            </mat-error>
+          }
+
+        </mat-form-field>
+
+
+        <!-- Senha -->
+        <mat-form-field appearance="outline">
+
+          <mat-label>Senha</mat-label>
+
+          <input
+            matInput
+            type="password"
+            formControlName="senha"
+            placeholder="Digite sua senha"
+          >
+
+          @if (loginForm.get('senha')?.hasError('required')) {
+            <mat-error>
+              A senha é obrigatória.
+            </mat-error>
+          }
+
+          @if (
+            loginForm.get('senha')?.hasError('minlength') &&
+            !loginForm.get('senha')?.hasError('required')
+          ) {
+            <mat-error>
+              A senha deve ter pelo menos 6 caracteres.
+            </mat-error>
+          }
+
+        </mat-form-field>
+
+
+        <!-- Erro retornado pelo PHP -->
+        @if (mensagemErro) {
+          <div class="erro-login">
+            {{ mensagemErro }}
+          </div>
+        }
+
+
+        <!-- Botão -->
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="loginForm.invalid"
+        >
+          Entrar
+        </button>
+
+      </form>
+
+    </mat-card-content>
+
+  </mat-card>
+
+</div>

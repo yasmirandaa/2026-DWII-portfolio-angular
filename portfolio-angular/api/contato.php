@@ -3,28 +3,25 @@
 header('Access-Control-Allow-Origin: https://improved-yodel-r49xpxvq99jwcwx64-4200.app.github.dev');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
+header('Content-Type: application/json; charset=utf-8'); // Garante header JSON no retorno
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit;
 }
 
-// So aceitamos POST aqui.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['erro' => 'Use POST.']);
     exit;
 }
 
-// 1) Ler o CORPO cru (JSON) - NAO use $_POST: o Angular manda JSON.
 $dados = json_decode(file_get_contents('php://input'), true);
 
-// 2) Limpar espacos das pontas, com coalescencia nula (?? '')
 $nome = trim($dados['nome'] ?? '');
 $email = trim($dados['email'] ?? '');
 $mensagem = trim($dados['mensagem'] ?? '');
 
-// 3) Validar no SERVIDOR (nunca confie no front)
 $erros = [];
 
 if ($nome === '') $erros[] = 'O nome e obrigatorio.';
@@ -35,21 +32,25 @@ elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $erros[] = 'O e-mail e inval
 if (mb_strlen($mensagem) < 10) $erros[] = 'Mensagem com 10+ caracteres.';
 
 if (!empty($erros)) {
-    http_response_code(400); // Bad Request
+    http_response_code(400);
     echo json_encode(['erros' => $erros]);
     exit;
 }
-// 4) Gravar com PREPARED STATEMENT (anti SQL Injection)
-require __DIR__ . '/../conexao.php';      // fornece $pdo (Aula 16)
-$sql = 'INSERT INTO contatos (nome, email, mensagem)
-        VALUES (:nome, :email, :mensagem)';
-$stmt = $pdo->prepare($sql);
-$stmt->execute([':nome' => $nome, ':email' => $email, ':mensagem' => $mensagem]);
 
-// 5) Responder 201 Created com o id gerado
-http_response_code(201);
-echo json_encode([
-    'sucesso'  => true,
-    'id'       => (int) $pdo->lastInsertId(),
-    'mensagem' => 'Contato recebido com sucesso!'
-]);
+try {
+    require __DIR__ . '/../conexao.php';
+
+    $sql = 'INSERT INTO contatos (nome, email, mensagem) VALUES (:nome, :email, :mensagem)';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':nome' => $nome, ':email' => $email, ':mensagem' => $mensagem]);
+
+    http_response_code(201);
+    echo json_encode([
+        'sucesso'  => true,
+        'id'       => (int) $pdo->lastInsertId(),
+        'mensagem' => 'Contato recebido com sucesso!'
+    ]);
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode(['erro' => 'Erro interno ao salvar no banco de dados.']);
+}

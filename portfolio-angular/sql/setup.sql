@@ -58,3 +58,13 @@ INSERT INTO tecnologias (nome, categoria, descricao, ano_criacao) VALUES
 ('Git',        'DevOps',         'Sistema de controle de versao distribuido.',       2005);
 
 SELECT id, nome, ano, status FROM projetos;
+
+CREATE TABLE usuarios (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    nome VARCHAR(120) NOT NULL,
+    email VARCHAR(180) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
