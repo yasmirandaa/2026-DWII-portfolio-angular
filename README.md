@@ -75,6 +75,7 @@ O formulário de criação e edição utiliza a mesma interface, diferenciando o
 | npm         | 11.19.0  |
 | Angular CLI | 21.2.21  |
 
+
 ---
 
 ## 📥 Instalação
@@ -193,9 +194,11 @@ Após o salvamento, o formulário é limpo, retorna ao modo de adição e a list
 
 ## 🎯 Autoavaliação
 
-**Conceito: B**
+## 🎯 Autoavaliação
 
-Considero que o projeto atende aos requisitos do nível B, pois foram implementadas as páginas solicitadas, o destaque da página ativa, melhorias na organização visual, integração com uma API em PHP conectada ao banco de dados MariaDB e uma área de gestão para criação, edição e exclusão de projetos. O formulário de contato possui validações e mensagens de erro por campo, exibidas quando o campo está inválido e já foi tocado. Na gestão de projetos, após o salvamento, a lista é atualizada automaticamente e o formulário retorna ao modo de adição. A documentação também apresenta as informações necessárias para instalação, execução, utilização da API e justificativa do endereço único `/gestao`.
+**Conceito: A**
+
+Considero que o projeto atende aos requisitos do nível A, pois foram implementadas as páginas solicitadas, o destaque da página ativa, a organização visual com Angular Material e a integração com uma API em PHP conectada ao banco de dados MariaDB. O projeto também possui sistema de login e uma área de gestão em `/gestao`, permitindo criar, editar e excluir projetos, com atualização automática da lista após as alterações. O formulário de contato possui validações, mensagens de erro por campo e tratamento dos estados de envio e resposta. A documentação apresenta as funcionalidades, tecnologias, versões do ambiente, instruções de instalação e execução, endpoints da API e a justificativa para a utilização de um único endereço na área de gestão. O histórico de alterações também utiliza mensagens de commit descritivas, facilitando a identificação das mudanças realizadas no projeto.
 
 ---
 
