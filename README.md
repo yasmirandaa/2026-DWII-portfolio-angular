@@ -75,8 +75,6 @@ O formulário de criação e edição utiliza a mesma interface, diferenciando o
 | npm         | 11.19.0  |
 | Angular CLI | 21.2.21  |
 
-> Substitua os valores acima pelas versões instaladas na sua máquina.
-
 ---
 
 ## 📥 Instalação
