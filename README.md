@@ -6,7 +6,7 @@ Este projeto foi desenvolvido utilizando Angular com o objetivo de criar uma apl
 
 A aplicação utiliza roteamento, Angular Material e integração com uma API desenvolvida em PHP para disponibilizar projetos e tecnologias cadastrados em um banco de dados MariaDB.
 
-O sistema também possui páginas de Início, Sobre, Projetos e Contato, além de funcionalidades de autenticação e gerenciamento.
+O sistema possui páginas de Início, Sobre, Projetos e Contato, além de funcionalidades de autenticação e gerenciamento.
 
 ---
 
@@ -36,20 +36,25 @@ O sistema também possui páginas de Início, Sobre, Projetos e Contato, além d
 * Organização do portfólio com foco profissional.
 * Integração com banco de dados MariaDB.
 * Implementação de funcionalidades de login e gerenciamento.
+* Tratamento de estados de carregamento, erro e conteúdo vazio nas telas que consomem a API.
+* Uso do `AsyncPipe` para exibição dos dados recebidos da API.
 
 ---
+
 ## 🔐 Login e Gestão
 
 O projeto possui uma área de login para acesso à gestão do portfólio. Após a autenticação, o usuário pode acessar o painel de gestão em `/gestao`.
 
 No painel de gestão é possível:
-- adicionar novos projetos;
-- editar projetos existentes;
-- excluir projetos;
-- visualizar a lista de projetos cadastrados;
-- atualizar a lista automaticamente após as alterações.
 
-O formulário de criação e edição utiliza a mesma interface, diferenciando os modos por meio do estado de edição. A gestão está concentrada no endereço `/gestao`, evitando a criação de páginas separadas para cada operação.
+* adicionar novos projetos;
+* editar projetos existentes;
+* excluir projetos;
+* visualizar a lista de projetos cadastrados;
+* atualizar a lista automaticamente após as alterações.
+
+O formulário de criação e edição utiliza a mesma interface, diferenciando os modos por meio do estado `editandoId`. A gestão está concentrada no endereço `/gestao`, evitando a criação de páginas separadas para cada operação.
+
 ---
 
 ## 🛠️ Tecnologias Utilizadas
@@ -69,12 +74,11 @@ O formulário de criação e edição utiliza a mesma interface, diferenciando o
 
 ## ⚙️ Ambiente de Desenvolvimento
 
-| Ferramenta  | Versão   |
-|-------------|----------|
-| Node.js     | 24.14.0  |
-| npm         | 11.19.0  |
-| Angular CLI | 21.2.21  |
-
+| Ferramenta  | Versão  |
+| ----------- | ------- |
+| Node.js     | 24.14.0 |
+| npm         | 11.19.0 |
+| Angular CLI | 21.2.21 |
 
 ---
 
@@ -119,10 +123,10 @@ Os dados retornados pelos endpoints são filtrados diretamente no banco de dados
 
 O arquivo `sql/setup.sql` contém os comandos necessários para:
 
-* Recriar o banco de dados `dwii_db`.
-* Criar o usuário do banco de dados.
-* Criar as tabelas `projetos`, `tecnologias`, `contatos` e `usuarios`.
-* Inserir dados iniciais de projetos e tecnologias.
+* recriar o banco de dados `dwii_db`;
+* criar o usuário do banco de dados;
+* criar as tabelas `projetos`, `tecnologias`, `contatos` e `usuarios`;
+* inserir dados iniciais de projetos e tecnologias.
 
 ### Execução da API e da aplicação
 
@@ -174,10 +178,10 @@ http://localhost:8000/api/tecnologias.php
 ```text
 src/app/components  → Componentes da aplicação
 src/app/services    → Serviços e comunicação com APIs
-src/assets          → Arquivos estáticos
-src/environments    → Configurações de ambiente
-api                 → Endpoints da API em PHP
-sql                 → Scripts de criação e configuração do banco
+src/assets           → Arquivos estáticos
+src/environments     → Configurações de ambiente
+api                  → Endpoints da API em PHP
+sql                  → Scripts de criação e configuração do banco
 ```
 
 ---
@@ -194,11 +198,23 @@ Após o salvamento, o formulário é limpo, retorna ao modo de adição e a list
 
 ## 🎯 Autoavaliação
 
-## 🎯 Autoavaliação
+**Conceito pretendido: A**
 
-**Conceito: A**
+**Justificativa:**
 
-Considero que o projeto atende aos requisitos do nível A, pois foram implementadas as páginas solicitadas, o destaque da página ativa, a organização visual com Angular Material e a integração com uma API em PHP conectada ao banco de dados MariaDB. O projeto também possui sistema de login e uma área de gestão em `/gestao`, permitindo criar, editar e excluir projetos, com atualização automática da lista após as alterações. O formulário de contato possui validações, mensagens de erro por campo e tratamento dos estados de envio e resposta. A documentação apresenta as funcionalidades, tecnologias, versões do ambiente, instruções de instalação e execução, endpoints da API e a justificativa para a utilização de um único endereço na área de gestão. O histórico de alterações também utiliza mensagens de commit descritivas, facilitando a identificação das mudanças realizadas no projeto.
+* **Consumo da API — Projetos:** a tela de projetos utiliza o `ProjetoService` para realizar a requisição à API. Em `projetos.ts`, os dados são obtidos por meio de `this.service.listar()` e exibidos com `AsyncPipe`. Em `projetos.html`, os projetos são apresentados utilizando `@for`.
+
+* **Estados da tela Projetos:** `projetos.ts` utiliza `catchError()` para tratar falhas na requisição e `finalize()` para controlar o estado de carregamento. Em `projetos.html`, são apresentados os estados de carregamento, erro e vazio, incluindo a mensagem quando não existem projetos publicados.
+
+* **Catálogo:** a tela `catalogo.ts` utiliza o service para obter as tecnologias e o `AsyncPipe` para exibi-las. Em `catalogo.html`, os dados são apresentados com `@for`, com tratamento para carregamento e catálogo vazio.
+
+* **Botão GitHub:** em `projetos.html`, o botão "Ver no GitHub" utiliza property binding com `[href]="p.link_github"`, direcionando para o endereço do projeto quando disponível.
+
+* **Boas práticas Angular:** o acesso aos dados e as requisições HTTP ficam concentrados nos services, enquanto os componentes ficam responsáveis pela apresentação dos dados e pelo controle dos estados da interface. Essa organização facilita a manutenção e evita a duplicação da lógica de acesso à API.
+
+* **Iniciativa própria:** foram implementados estados vazios nas telas de Projetos e Catálogo e utilizado o `AsyncPipe`, evitando a necessidade de `subscribe()` direto nos componentes para a exibição dos dados.
+
+* **Autoavaliação:** esta seção do `README.md` apresenta o conceito pretendido e relaciona cada critério aos arquivos responsáveis pela implementação.
 
 ---
 
