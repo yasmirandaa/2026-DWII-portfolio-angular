@@ -43,10 +43,16 @@ export class Gestao implements OnInit {
     this.form.patchValue(p);
   }
 
+  
   salvar() {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
     this.salvando = true;
     this.erro = '';
+
     const dados = this.form.value as Projeto;
 
     const requisicao = this.editandoId
@@ -54,10 +60,28 @@ export class Gestao implements OnInit {
       : this.service.criar(dados);
 
     requisicao.subscribe({
-      next: () => { this.salvando = false; },
-      error: () => { this.salvando = false; this.erro = 'Nao foi possivel salvar. Tente de novo.'; }
+      next: () => {
+        this.salvando = false;
+        this.editandoId = null;
+
+        this.form.reset({
+          nome: '',
+          descricao: '',
+          tecnologias: '',
+          link_github: '',
+          ano: 2026
+        });
+
+        this.carregar();
+      },
+      error: () => {
+        this.salvando = false;
+        this.erro = 'Nao foi possivel salvar. Tente de novo.';
+      }
     });
   }
+
+
 
   excluir(p: Projeto) {
     if (!p.id) { return; }
