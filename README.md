@@ -74,8 +74,6 @@ O formulário de criação e edição utiliza a mesma interface, diferenciando o
 | Node.js     | 24.14.0  |
 | npm         | 11.19.0  |
 | Angular CLI | 21.2.21  |
-| PHP         | X.X.X    |
-| MariaDB     | X.X.X    |
 
 > Substitua os valores acima pelas versões instaladas na sua máquina.
 
