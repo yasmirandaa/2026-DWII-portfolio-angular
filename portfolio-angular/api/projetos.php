@@ -20,16 +20,7 @@ require __DIR__ . '/../conexao.php';
 $metodo = $_SERVER['REQUEST_METHOD'];
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 if ($metodo === 'GET'){
-    $sql = "
-        SELECT id, nome, descricao, tecnologias, link_github, ano
-        FROM projetos
-        WHERE status = 'publicado'
-        ORDER BY ano DESC, id
-    ";
-
-    $projetos = $pdo->query($sql)->fetchAll();
-
-    echo json_encode($projetos);
+    $c_encode($projetos);
     exit;
 }
 
