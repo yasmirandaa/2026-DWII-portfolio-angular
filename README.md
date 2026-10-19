@@ -195,7 +195,29 @@ A utilização de um único endereço evita a duplicação de páginas e mantém
 Após o salvamento, o formulário é limpo, retorna ao modo de adição e a lista de projetos é atualizada automaticamente, sem necessidade de recarregar a página.
 
 ---
+### Aula 23: a API cria, altera e apaga
 
+A API em uso é a de `api-node/`. Os arquivos `api/*.php` e `conexao.php` ficam no repositório como histórico do 2o trimestre.
+
+```bash
+curl -i -X POST http://localhost:3000/api/projetos -H "Content-Type: application/json"
+curl -i -X PUT http://localhost:3000/api/projetos/7 -H "Content-Type: application/json"
+curl -i -X DELETE http://localhost:3000/api/projetos/7
+```
+---
+
+### Aula 24: a tranca
+Quem escreve precisa de um token. Antes do primeiro uso, crie a tabela e o don
+sudo mariadb dwii_db < sql/usuarios.sql
+cd api-node
+npm install
+node criar-usuario.js dono@portfolio.dev portfolio2026
+Login e escrita com o token:
+curl -i -X POST http://localhost:3000/api/login -H "Content-Type: applicat
+curl -i -X POST http://localhost:3000/api/projetos -H "Authorization: Bear
+curl -i -X PUT http://localhost:3000/api/projetos/8 -H "Authorization: Bea
+
+---
 ## 🎯 Autoavaliação
 
 **Conceito pretendido: A**
