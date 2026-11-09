@@ -10,4 +10,4 @@ function CardProjeto({ nome, descricao, tecnologias, link_githb, ano}) {
   );
 }
 
-export default CardProjetos;
+export default CardProjeto;
