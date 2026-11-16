@@ -4,9 +4,9 @@
 
 Este projeto foi desenvolvido utilizando Angular com o objetivo de criar uma aplicação web moderna, responsiva e organizada em componentes.
 
-A aplicação utiliza roteamento, Angular Material e integração com uma API desenvolvida em PHP para disponibilizar projetos e tecnologias cadastrados em um banco de dados MariaDB.
+A aplicação utiliza roteamento, Angular Material e integração com APIs para disponibilizar projetos e tecnologias cadastrados em um banco de dados MariaDB.
 
-O sistema possui páginas de Início, Sobre, Projetos e Contato, além de funcionalidades de autenticação e gerenciamento.
+O sistema possui páginas de Início, Sobre, Projetos e Contato, além de funcionalidades de autenticação e gerenciamento de projetos.
 
 ---
 
@@ -35,7 +35,7 @@ O sistema possui páginas de Início, Sobre, Projetos e Contato, além de funcio
 * Estrutura preparada para futuras funcionalidades.
 * Organização do portfólio com foco profissional.
 * Integração com banco de dados MariaDB.
-* Implementação de funcionalidades de login e gerenciamento.
+* Implementação de login e gerenciamento de projetos.
 * Tratamento de estados de carregamento, erro e conteúdo vazio nas telas que consomem a API.
 * Uso do `AsyncPipe` para exibição dos dados recebidos da API.
 
@@ -47,13 +47,15 @@ O projeto possui uma área de login para acesso à gestão do portfólio. Após 
 
 No painel de gestão é possível:
 
-* adicionar novos projetos;
-* editar projetos existentes;
-* excluir projetos;
-* visualizar a lista de projetos cadastrados;
-* atualizar a lista automaticamente após as alterações.
+* Adicionar novos projetos.
+* Editar projetos existentes.
+* Excluir projetos.
+* Visualizar a lista de projetos cadastrados.
+* Atualizar a lista automaticamente após as alterações.
 
-O formulário de criação e edição utiliza a mesma interface, diferenciando os modos por meio do estado `editandoId`. A gestão está concentrada no endereço `/gestao`, evitando a criação de páginas separadas para cada operação.
+O formulário de criação e edição utiliza a mesma interface, diferenciando os modos por meio do estado `editandoId`.
+
+A API Node.js utiliza autenticação com senha criptografada por bcrypt e tokens JWT. As operações de criação, edição e exclusão exigem autenticação.
 
 ---
 
@@ -65,6 +67,9 @@ O formulário de criação e edição utiliza a mesma interface, diferenciando o
 * CSS3
 * Angular Material
 * Node.js
+* Express
+* bcrypt
+* JSON Web Token (JWT)
 * npm
 * PHP
 * MariaDB
@@ -74,10 +79,10 @@ O formulário de criação e edição utiliza a mesma interface, diferenciando o
 
 ## ⚙️ Ambiente de Desenvolvimento
 
-| Ferramenta  | Versão  |
-| ----------- | ------- |
-| Node.js     | 24.14.0 |
-| npm         | 11.19.0 |
+| Ferramenta | Versão |
+|---|---|
+| Node.js | 24.14.0 |
+| npm | 11.19.0 |
 | Angular CLI | 21.2.21 |
 
 ---
@@ -104,84 +109,258 @@ npm install
 
 ---
 
-## 🔌 API
+## 🔌 APIs
 
-O projeto possui uma API desenvolvida em PHP, responsável por consultar os dados armazenados no banco de dados MariaDB e disponibilizá-los para a aplicação Angular.
+O projeto possui duas implementações de API:
 
-As respostas da API são fornecidas no formato JSON, com configuração de CORS e `Content-Type: application/json`.
+* **API PHP:** utilizada para consultas de projetos e tecnologias, mantida como parte do desenvolvimento anterior.
+* **API Node.js:** utilizada na implementação de autenticação e operações de gerenciamento de projetos.
 
-### Endpoints
+### API PHP
 
-| Método | Endpoint               | Descrição                                   |
-| ------ | ---------------------- | ------------------------------------------- |
-| GET    | `/api/projetos.php`    | Retorna os projetos com status `publicado`. |
-| GET    | `/api/tecnologias.php` | Retorna as tecnologias com status `ativo`.  |
+Os endpoints PHP estão localizados na pasta `api/`.
 
-Os dados retornados pelos endpoints são filtrados diretamente no banco de dados.
+| Método | Endpoint | Descrição |
+|---|---|---|
+| GET | `/api/projetos.php` | Retorna projetos com status `publicado`. |
+| GET | `/api/tecnologias.php` | Retorna tecnologias com status `ativo`. |
+
+Os dados são consultados no MariaDB e retornados no formato JSON.
+
+### API Node.js
+
+A API Node.js está localizada na pasta `api-node/` e utiliza Express, MariaDB e JWT.
+
+| Método | Endpoint | Autenticação | Descrição |
+|---|---|---|---|
+| POST | `/api/login` | Não | Realiza o login e retorna um token JWT. |
+| GET | `/api/projetos` | Não | Lista os projetos publicados. |
+| GET | `/api/projetos/:id` | Não | Consulta um projeto pelo ID. |
+| POST | `/api/projetos` | Sim | Cadastra um projeto. |
+| PUT | `/api/projetos/:id` | Sim | Atualiza um projeto. |
+| DELETE | `/api/projetos/:id` | Sim | Exclui um projeto. |
+
+As rotas de escrita utilizam o middleware `autenticar`, que verifica o token JWT enviado no cabeçalho `Authorization`.
 
 ### Banco de dados
 
-O arquivo `sql/setup.sql` contém os comandos necessários para:
+O arquivo `sql/setup.sql` contém os comandos para configurar o banco de dados `dwii_db` e suas tabelas.
 
-* recriar o banco de dados `dwii_db`;
-* criar o usuário do banco de dados;
-* criar as tabelas `projetos`, `tecnologias`, `contatos` e `usuarios`;
-* inserir dados iniciais de projetos e tecnologias.
+A API Node.js utiliza a tabela `usuario`, que armazena o e-mail e o hash da senha. As senhas são protegidas com bcrypt.
 
-### Execução da API e da aplicação
+As credenciais e configurações locais devem ser mantidas em um arquivo `.env`, que não deve ser enviado ao GitHub.
 
-Na raiz do projeto, execute os comandos abaixo.
+### Execução da API Node.js
 
-**1. Instale as dependências do Angular:**
+Acesse a pasta:
+
+```bash
+cd api-node
+```
+
+Instale as dependências:
 
 ```bash
 npm install
 ```
 
-**2. Inicie o servidor PHP:**
+Configure as variáveis de ambiente necessárias no arquivo `.env`, conforme o modelo `.env.example`.
+
+Inicie a API:
 
 ```bash
-php -S localhost:8000
-```
-
-**3. Inicie o servidor de desenvolvimento Angular:**
-
-```bash
-ng serve
+node server.js
 ```
 
 A API ficará disponível em:
 
 ```text
+http://localhost:3000
+```
+
+### Execução da API PHP
+
+Na raiz do projeto, execute:
+
+```bash
+php -S localhost:8000
+```
+
+A API PHP ficará disponível em:
+
+```text
 http://localhost:8000
 ```
 
-A aplicação Angular ficará disponível em:
+### Execução do Angular
+
+Em outro terminal, na raiz do projeto:
+
+```bash
+ng serve
+```
+
+A aplicação ficará disponível em:
 
 ```text
 http://localhost:4200
 ```
 
-Os endpoints da API poderão ser acessados em:
+---
 
-```text
-http://localhost:8000/api/projetos.php
-http://localhost:8000/api/tecnologias.php
+## 🧪 Testes da API Node.js
+
+Foram realizados testes utilizando `curl` para verificar o funcionamento das rotas públicas e protegidas.
+
+### 1. Login
+
+Requisição:
+
+```bash
+curl -i -X POST http://localhost:3000/api/login \
+-H "Content-Type: application/json" \
+-d '{"email":"teste@portfolio.dev","senha":"SENHA_DE_TESTE"}'
 ```
 
-> Antes de iniciar a aplicação, configure o banco de dados MariaDB executando o arquivo `sql/setup.sql`. O servidor PHP deve ser iniciado na raiz do projeto, onde se encontra a pasta `api`.
+Resposta obtida:
+
+```http
+HTTP/1.1 200 OK
+```
+
+A resposta JSON contém o token JWT utilizado para autenticar as operações protegidas.
+
+### 2. Listagem pública de projetos
+
+Requisição:
+
+```bash
+curl -i http://localhost:3000/api/projetos
+```
+
+Resposta obtida:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+```
+
+A API retornou a lista de projetos publicados sem exigir token.
+
+### 3. Cadastro sem autenticação
+
+Requisição:
+
+```bash
+curl -i -X POST http://localhost:3000/api/projetos \
+-H "Content-Type: application/json" \
+-d '{"nome":"Teste sem token","descricao":"Teste de proteção","tecnologias":"Node.js","ano":2026}'
+```
+
+Resposta obtida:
+
+```http
+HTTP/1.1 401 Unauthorized
+```
+
+```json
+{"erro":"Token ausente"}
+```
+
+O cadastro foi bloqueado porque a requisição não possuía token.
+
+### 4. Cadastro com autenticação
+
+Requisição:
+
+```bash
+curl -i -X POST http://localhost:3000/api/projetos \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer SEU_TOKEN" \
+-d '{"nome":"Projeto de autenticação","descricao":"Teste de cadastro protegido","tecnologias":"Node.js","ano":2026}'
+```
+
+Resposta obtida:
+
+```http
+HTTP/1.1 201 Created
+```
+
+```json
+{"id":17}
+```
+
+O projeto foi cadastrado com sucesso.
+
+### 5. Edição com autenticação
+
+Requisição:
+
+```bash
+curl -i -X PUT http://localhost:3000/api/projetos/17 \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer SEU_TOKEN" \
+-d '{"nome":"Projeto de autenticação editado","descricao":"Teste de edição protegida","tecnologias":"Node.js, Express","ano":2026}'
+```
+
+Resposta obtida:
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{"mensagem":"Projeto atualizado"}
+```
+
+O projeto foi atualizado com sucesso.
+
+### 6. Exclusão com autenticação
+
+Requisição:
+
+```bash
+curl -i -X DELETE http://localhost:3000/api/projetos/17 \
+-H "Authorization: Bearer SEU_TOKEN"
+```
+
+Resposta obtida:
+
+```http
+HTTP/1.1 204 No Content
+```
+
+O projeto foi excluído com sucesso.
+
+### Resumo dos testes
+
+| Operação | Resultado |
+|---|---|
+| Login | 200 OK |
+| Listagem pública | 200 OK |
+| Cadastro sem token | 401 Unauthorized |
+| Cadastro com token | 201 Created |
+| Edição com token | 200 OK |
+| Exclusão com token | 204 No Content |
+
+Os testes confirmaram que a listagem é pública e que as operações de criação, edição e exclusão exigem autenticação.
 
 ---
 
 ## 📁 Estrutura do Projeto
 
 ```text
-src/app/components  → Componentes da aplicação
-src/app/services    → Serviços e comunicação com APIs
-src/assets           → Arquivos estáticos
-src/environments     → Configurações de ambiente
-api                  → Endpoints da API em PHP
-sql                  → Scripts de criação e configuração do banco
+src/
+  app/
+    components/       → Componentes da aplicação
+    services/         → Serviços e comunicação com APIs
+  assets/             → Arquivos estáticos
+  environments/       → Configurações de ambiente
+
+api/                  → Endpoints em PHP
+api-node/             → API Node.js e autenticação
+sql/                  → Scripts do banco de dados
+portfolio-react/      → Projeto desenvolvido em React
 ```
 
 ---
@@ -190,41 +369,12 @@ sql                  → Scripts de criação e configuração do banco
 
 A área de gestão está disponível no endereço único `/gestao`, concentrando as operações de criação e edição de projetos em uma mesma interface.
 
-A utilização de um único endereço evita a duplicação de páginas e mantém o gerenciamento centralizado. O comportamento do formulário é definido pelo estado `editandoId`: quando não há um ID selecionado, o formulário é utilizado para adicionar um projeto; quando há um ID, o mesmo formulário passa a editar o projeto correspondente.
+O comportamento do formulário é definido pelo estado `editandoId`: quando não há um ID selecionado, o formulário é utilizado para adicionar um projeto; quando há um ID, o mesmo formulário passa a editar o projeto correspondente.
 
 Após o salvamento, o formulário é limpo, retorna ao modo de adição e a lista de projetos é atualizada automaticamente, sem necessidade de recarregar a página.
 
 ---
-### Aula 23: a API cria, altera e apaga
 
-A API em uso é a de `api-node/`. Os arquivos `api/*.php` e `conexao.php` ficam no repositório como histórico do 2o trimestre.
-
-```bash
-curl -i -X POST http://localhost:3000/api/projetos -H "Content-Type: application/json"
-curl -i -X PUT http://localhost:3000/api/projetos/7 -H "Content-Type: application/json"
-curl -i -X DELETE http://localhost:3000/api/projetos/7
-```
----
-
-### Aula 24: a tranca
-Quem escreve precisa de um token. Antes do primeiro uso, crie a tabela e o don
-sudo mariadb dwii_db < sql/usuarios.sql
-cd api-node
-npm install
-node criar-usuario.js dono@portfolio.dev portfolio2026
-Login e escrita com o token:
-curl -i -X POST http://localhost:3000/api/login -H "Content-Type: applicat
-curl -i -X POST http://localhost:3000/api/projetos -H "Authorization: Bear
-curl -i -X PUT http://localhost:3000/api/projetos/8 -H "Authorization: Bea
----
-### Aula 25: o Portfolio em React
-O front novo nasce em portfolio-react/ (Vite + React), ao lado do Angular. Para rodar: 
-cd portfolio-react
-npm install
-npm run dev
-A tela abre na porta 5173. Por enquanto os projetos sao fixos no src/App.jsx; 
-
----
 ## 🎯 Autoavaliação
 
 **Conceito pretendido: A**
@@ -233,17 +383,19 @@ A tela abre na porta 5173. Por enquanto os projetos sao fixos no src/App.jsx;
 
 * **Consumo da API — Projetos:** a tela de projetos utiliza o `ProjetoService` para realizar a requisição à API. Em `projetos.ts`, os dados são obtidos por meio de `this.service.listar()` e exibidos com `AsyncPipe`. Em `projetos.html`, os projetos são apresentados utilizando `@for`.
 
-* **Estados da tela Projetos:** `projetos.ts` utiliza `catchError()` para tratar falhas na requisição e `finalize()` para controlar o estado de carregamento. Em `projetos.html`, são apresentados os estados de carregamento, erro e vazio, incluindo a mensagem quando não existem projetos publicados.
+* **Estados da tela Projetos:** `projetos.ts` utiliza `catchError()` para tratar falhas na requisição e `finalize()` para controlar o estado de carregamento. Em `projetos.html`, são apresentados os estados de carregamento, erro e vazio.
 
-* **Catálogo:** a tela `catalogo.ts` utiliza o service para obter as tecnologias e o `AsyncPipe` para exibi-las. Em `catalogo.html`, os dados são apresentados com `@for`, com tratamento para carregamento e catálogo vazio.
+* **Catálogo:** a tela `catalogo.ts` utiliza o service para obter as tecnologias e o `AsyncPipe` para exibi-las. Em `catalogo.html`, os dados são apresentados utilizando `@for`, com tratamento para carregamento e catálogo vazio.
 
-* **Botão GitHub:** em `projetos.html`, o botão "Ver no GitHub" utiliza property binding com `[href]="p.link_github"`, direcionando para o endereço do projeto quando disponível.
+* **Botão GitHub:** em `projetos.html`, o botão "Ver no GitHub" utiliza property binding com `[href]="p.link_github"`.
 
-* **Boas práticas Angular:** o acesso aos dados e as requisições HTTP ficam concentrados nos services, enquanto os componentes ficam responsáveis pela apresentação dos dados e pelo controle dos estados da interface. Essa organização facilita a manutenção e evita a duplicação da lógica de acesso à API.
+* **Boas práticas Angular:** o acesso aos dados e as requisições HTTP ficam concentrados nos services, enquanto os componentes ficam responsáveis pela apresentação dos dados e pelo controle dos estados da interface.
+
+* **Autenticação e segurança:** a API Node.js utiliza bcrypt para verificar senhas e JWT para autenticar as operações protegidas. A listagem de projetos é pública, enquanto as rotas de criação, edição e exclusão exigem token.
 
 * **Iniciativa própria:** foram implementados estados vazios nas telas de Projetos e Catálogo e utilizado o `AsyncPipe`, evitando a necessidade de `subscribe()` direto nos componentes para a exibição dos dados.
 
-* **Autoavaliação:** esta seção do `README.md` apresenta o conceito pretendido e relaciona cada critério aos arquivos responsáveis pela implementação.
+* **Autoavaliação:** esta seção apresenta o conceito pretendido e relaciona os critérios às funcionalidades implementadas.
 
 ---
 
@@ -251,9 +403,22 @@ A tela abre na porta 5173. Por enquanto os projetos sao fixos no src/App.jsx;
 
 Projeto desenvolvido por Yasmin Lara Amanajás de Miranda para fins acadêmicos.
 
-### Aula 26: estado, lista e formulario
+---
 
-Os projetos sairam do `App.jsx` e moram em `src/projetos.js`. A tela os desenha com `map`.
+## 📚 Histórico de desenvolvimento
 
-O formulario de contato (`src/Contato.jsx`) guarda o que a pessoa digita no estado, com `useState`.
-Ele ainda nao envia nada: avisa e limpa os campos. O envio de verdade chega com a API.
+### Aula 23: API de criação, edição e exclusão
+
+Implementação das operações de cadastro, atualização e exclusão de projetos por meio da API Node.js.
+
+### Aula 24: Autenticação
+
+Implementação de login com bcrypt e JWT, além da proteção das rotas responsáveis pela escrita dos dados.
+
+### Aula 25: Portfólio em React
+
+Criação do projeto `portfolio-react/`, utilizando Vite e React, como uma nova implementação de interface.
+
+### Aula 26: Estado, lista e formulário
+
+Os projetos foram organizados em `src/projetos.js` e apresentados utilizando `map`. O formulário de contato utiliza `useState` para controlar os dados digitados.
